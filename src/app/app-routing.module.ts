@@ -1,14 +1,19 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { CarImageComponent } from './components/car-image/car-image.component';
+import { CarDetailComponent } from './components/car-detail/car-detail.component';
 import { CarComponent } from './components/car/car/car.component';
+import { PaymentComponent } from './components/payment/payment.component';
+import { RentalComponent } from './components/rental/rental/rental.component';
 
 const routes: Routes = [
   {path : "",pathMatch : "full", component : CarComponent},
   {path : "cars", component : CarComponent},
+  {path : "cars/brand/:brandId/color/:colorId",component:CarComponent},
   {path : "cars/color/:colorId", component : CarComponent},
   {path : "cars/brand/:brandId", component : CarComponent},
-  {path : "carimage/:carId", component:CarImageComponent}
+  {path : "cars/details/:carId", component : CarDetailComponent},
+  {path : "rentals/:carId", component : RentalComponent},
+  {path : "payment/:carId", component : PaymentComponent}
 ];
 
 @NgModule({

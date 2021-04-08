@@ -1,13 +1,9 @@
-<ul class="list-group">
-  <li [class]="getAllBrandClass()" routerLink="/cars">Tüm Markalar</li>
-  <li
-    (click)="setCurrentBrand(brand)"
-    routerLink="/cars/brand/{{ brand.id }}"
-    *ngFor="let brand of brands"
-    [class]="getCurrentBrandClass(brand)"
-  >
-    {{ brand.name }}
-  </li>
-</ul>
-
-<h5 *ngIf="currentBrand">{{ currentBrand.name }} seçtiniz</h5>
+<div class="card">
+    <div class="card-header"><strong>Markalar</strong></div>
+    <select (change)="setCurrentBrand()" [(ngModel)]="selectedBrand" class="form-select">
+      <option [ngValue]="allBrand" [selected]="allBrandSelected()" class="option">Tüm Markalar</option>
+      <option *ngFor="let brand of brands" [ngValue]="brand" class="option">
+        {{ brand.name }}
+      </option>
+    </select>
+  </div>

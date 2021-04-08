@@ -11,22 +11,24 @@ import { CarService } from 'src/app/services/car.service';
 export class CarComponent implements OnInit {
   cars: Car[] = [];
   dataLoaded = false;
+  filterText = '';
 
   constructor(
     private carService: CarService,
     private activatedRoute: ActivatedRoute,
-    private router:Router
+    private router: Router
   ) {}
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe(params => {
-      if(params["colorId"]){
-        this.getCarsByColor(params["colorId"]);
-      }
-      else if(params["brandId"]){
-        this.getCarsByBrand(params["brandId"]);
-      }
-      else{
+    this.activatedRoute.params.subscribe((params) => {
+      if (params["brandId"] && params["colorId"]) {
+        this.getCarsBrandAndColor(params["brandId"],params["colorId"])
+      } else if (params['brandId']) {
+        this.getCarsByBrand(params['brandId']);
+      } else if(params['colorId'])
+      {
+        this.getCarsByColor(params['colorId']);
+      } else {
         this.getCars();
       }
     });
@@ -53,7 +55,16 @@ export class CarComponent implements OnInit {
     });
   }
 
-  goToImage(carId:number){
-    this.router.navigate(['./carimage',carId])
+  getCarsBrandAndColor(brandId: number, colorId: number) {
+    this.carService
+      .getCarsBrandAndColor(brandId, colorId)
+      .subscribe((response) => {
+        this.cars = response.data;
+        this.dataLoaded = true;
+      });
+  }
+
+  goToImage(carId: number) {
+    this.router.navigate(['./cars/details/', carId]);
   }
 }

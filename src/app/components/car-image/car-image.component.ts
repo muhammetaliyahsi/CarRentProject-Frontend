@@ -11,11 +11,11 @@ import { CarImageService } from 'src/app/services/car-image.service';
 export class CarImageComponent implements OnInit {
 
   carImages: CarImage[] | null;
+  path = 'https://localhost:44396/Images/';
 
   constructor(
     private carImageService:CarImageService,
-    private activatedRoute:ActivatedRoute,
-    private router:Router
+    private activatedRoute:ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -30,10 +30,6 @@ export class CarImageComponent implements OnInit {
     this.carImageService.getImageByCarId(this.activatedRoute.snapshot.params["carId"]).subscribe((response) => {
       this.carImages = response.data;
     });
-  }
-
-  goToCars(){
-    this.router.navigate(['./cars'])
   }
 
 }

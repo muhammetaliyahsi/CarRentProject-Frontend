@@ -1,0 +1,43 @@
+<button
+  type="button"
+  class="btn btn-outline-secondary mb-3"
+  (click)="goToCars()"
+>
+  Geri
+</button>
+<div class="card mb-3">
+  <div class="row g-0">
+    <div class="col-md-6"><app-car-image></app-car-image></div>
+    <div class="col-md-6">
+      <div class="card-body">
+        <h5 class="card-title" style="padding-left: 4cm">
+          <strong>Araç Detayları</strong>
+        </h5>
+        <br>
+        <ul
+          *ngFor="let car of carDetails"
+          style="padding-left: 2.75cm"
+          class="list-group list-group-flush"
+        >
+          <li class="list-group-item">
+            <strong>Marka:</strong> {{ car.brandName }}
+          </li>
+          <li class="list-group-item">
+            <strong>Model:</strong> {{ car.modelYear }}
+          </li>
+          <li class="list-group-item">
+            <strong>Renk:</strong> {{ car.colorName }}
+          </li>
+          <li class="list-group-item">
+            <strong>Motor:</strong> {{ car.description }}
+          </li>
+          <li class="list-group-item">
+            <strong>Fiyat:</strong> {{ car.dailyPrice | currency }}
+          </li>
+          <br>
+          <button (click)="goToRentals(car.id)" type="button" class="btn btn-primary btn-lg">Kirala</button>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
