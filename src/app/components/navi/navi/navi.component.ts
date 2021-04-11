@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navi',
@@ -7,9 +8,37 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NaviComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  goToCarAdd(){
+    this.router.navigate(['./cars/add/']);
+  }
+
+  goToColorAdd(){
+    this.router.navigate(['./colors/add/']);
+  }
+
+  goToBrandAdd(){
+    this.router.navigate(['./brands/add/']);
+  }
+
+  
+
+  goToCarList(){
+    this.router.navigate(['./cars/edit/']);
+  }
+
+  goToColorList(){
+    this.router.navigate(['./colors/edit/']);
+  }
+
+  goToBrandList(){
+    this.router.navigate(['./brands/edit/']);
   }
 
 }
