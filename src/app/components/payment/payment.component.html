@@ -1,38 +1,40 @@
 <div class="card mt-4">
-    <div class="card-header text-center">
-      <strong>İşlem Özeti</strong>
-    </div>
-    <div class="card-body">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Başlangıç</th>
-            <th>Bitiş</th>
-            <th>Marka</th>
-            <th>Renk</th>
-            <th>Model Yılı</th>
-            <th>Günlük</th>
-            <th>Toplam</th>
-          </tr>
-        </thead>
-        <tbody *ngIf="car && rental">
-          <tr>
-            <td>{{ rental.rentDate | date: "dd/MM/yyyy" }}</td>
-            <td>{{ rental.returnDate | date: "dd/MM/yyyy" }}</td>
-            <td>{{ car.brandName }}</td>
-            <td>{{ car.colorName }}</td>
-            <td>{{ car.modelYear }}</td>
-            <td>{{ car.dailyPrice | currency: "₺" }}</td>
-            <td>
-              <strong class="text-danger">{{
-                amountOfPayment | currency: "₺"
-              }}</strong>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <div class="card-header text-center">
+    <strong>İşlem Özeti</strong>
   </div>
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Başlangıç</th>
+          <th>Bitiş</th>
+          <th>Marka</th>
+          <th>Renk</th>
+          <th>Model Yılı</th>
+          <th>Günlük</th>
+          <th>Toplam</th>
+        </tr>
+      </thead>
+      <tbody *ngIf="car && rental">
+        <tr>
+          <td>{{ rental.rentDate | date: "dd/MM/yyyy" }}</td>
+          <td>{{ rental.returnDate | date: "dd/MM/yyyy" }}</td>
+          <td>{{ car.brandName }}</td>
+          <td>{{ car.colorName }}</td>
+          <td>{{ car.modelYear }}</td>
+          <td>{{ car.dailyPrice | currency: "₺" }}</td>
+          <td>
+            <strong class="text-danger">{{
+              amountOfPayment | currency: "₺"
+            }}</strong>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<form [formGroup]="cardAddForm">
   <div class="card mt-4">
     <div class="card-header text-center">
       <strong>Ödeme İşlemlemi</strong>
@@ -42,62 +44,79 @@
         <div class="inputbox mt-3">
           <span>Kart Üzerindeki Ad Soyad</span>
           <input
-            [(ngModel)]="cardOwnerName"
+            formControlName="cardOwnerName"
             type="text"
-            name="name"
             class="form-control"
-            required="required"
+            id="cardOwnerName"
+            placeholder="Ad Soyad"
           />
         </div>
-        <div class="row">
-          <div class="col-md-6">
+      </div>
+
+      <div class="row">
+        <div class="inputbox mt-3">
+          <span>Kart Numarası</span>
+          <input
+            formControlName="cardNumber"
+            type="text"
+            class="form-control"
+            id="cardNumber"
+            placeholder="Kart Numarası"
+          />
+          <i class="fa fa-credit-card"></i>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <div class="d-flex flex-row">
             <div class="inputbox mt-3 mr-2">
-              <span>Kart Numarası</span>
+              <span>Son Kullanım Tarihi</span>
               <input
-                [(ngModel)]="cardNumber"
-                type="text"
-                name="name"
+                formControlName="expireMonth"
+                type="number"
                 class="form-control"
-                required="required"
+                id="expireMonth"
+                placeholder="MM"
               />
-              <i class="fa fa-credit-card"></i>
+            </div>
+            <div class="inputbox mr-2" style="padding-top: 10.5mm">
+              <input
+                formControlName="expireYear"
+                type="number"
+                class="form-control"
+                id="expireYear"
+                placeholder="YYYY"
+              />
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="d-flex flex-row">
-              <div class="inputbox mt-3 mr-2">
-                <span>Son Kullanım Tarihi</span>
-                <input
-                  [(ngModel)]="expireMonth"
-                  type="text"
-                  name="name"
-                  class="form-control"
-                  required="required"
-                />
-                <input
-                  [(ngModel)]="expireYear"
-                  type="text"
-                  name="name"
-                  class="form-control"
-                  required="required"
-                />
-              </div>
-              <div class="inputbox mt-3 mr-2">
-                <span>Güvenlik Kodu</span>
-                <input
-                  [(ngModel)]="cvc"
-                  type="text"
-                  name="name"
-                  class="form-control"
-                  required="required"
-                />
-              </div>
-            </div>
-          </div>
+        </div>
+
+        <div class="inputbox mt-3 col-md-6">
+          <span>Güvenlik Kodu</span>
+          <input
+            formControlName="cvc"
+            type="text"
+            class="form-control"
+            id="cvc"
+            placeholder="CVC"
+          />
         </div>
       </div>
     </div>
     <div class="card-footer">
+      <div class="checkbox mb-3">
+        <label class="checkbox-inline">
+          <input
+            type="checkbox"
+            name="true"
+            value="true"
+            [(ngModel)]="isChecked"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          Beni Hatırla
+        </label>
+      </div>
       <div class="row">
         <button (click)="payment()" class="btn btn-success">
           <strong>{{ amountOfPayment | currency: "₺" }} </strong>Ödeme Yap
@@ -105,4 +124,4 @@
       </div>
     </div>
   </div>
-  
+</form>

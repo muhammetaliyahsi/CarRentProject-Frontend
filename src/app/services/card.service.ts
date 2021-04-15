@@ -14,8 +14,8 @@ export class CardService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getByCustomerId(customerId : number) : Observable<ListResponseModel<Card>> {
-    let newPath = this.apiUrl + "cards/getbycustomerid?customerId="+customerId;
+  getByUserId(userId : number) : Observable<ListResponseModel<Card>> {
+    let newPath = this.apiUrl + "cards/getbyuserid?userId="+userId;
     return this.httpClient.get<ListResponseModel<Card>>(newPath);
   }
 

@@ -5,10 +5,13 @@ import { ToastrService } from 'ngx-toastr';
 import { Car } from 'src/app/models/car';
 import { Card } from 'src/app/models/card';
 import { Rental } from 'src/app/models/rental';
+import { User } from 'src/app/models/user';
 import { CarService } from 'src/app/services/car.service';
 import { CardService } from 'src/app/services/card.service';
+import { LocalStorageService } from 'src/app/services/local-storage.service';
 import { PaymentService } from 'src/app/services/payment.service';
 import { RentalService } from 'src/app/services/rental.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-payment',
@@ -18,6 +21,7 @@ import { RentalService } from 'src/app/services/rental.service';
 export class PaymentComponent implements OnInit {
   rental: Rental;
   car: Car;
+  savedCard : Card;
   amountOfPayment: number = 0;
   card: Card[];
   cardExist: Boolean = false;
@@ -27,15 +31,19 @@ export class PaymentComponent implements OnInit {
   expireMonth: number;
   expireYear: number;
   cvc: string;
+  cardAddForm: FormGroup;
+  isChecked: boolean = false;
 
   constructor(
     private cardService: CardService,
     private carService: CarService,
+    private formBuilder: FormBuilder,
     private paymentService: PaymentService,
     private activateRoute: ActivatedRoute,
     private router: Router,
     private toastrService: ToastrService,
-    private rentalService: RentalService
+    private localStorageService: LocalStorageService,
+    private rentalService: RentalService,
   ) {}
 
   ngOnInit(): void {
@@ -43,6 +51,18 @@ export class PaymentComponent implements OnInit {
       if (params['carId']) {
         this.getDetails(params['carId']);
       }
+    });
+    this.createCardAddForm();
+  }
+
+  createCardAddForm() {
+    this.cardAddForm = this.formBuilder.group({
+      userId: [Number(this.localStorageService.get('id')),Validators.required],
+      cardOwnerName: ['', Validators.required],
+      cardNumber: ['', Validators.required],
+      expireMonth: ['', Validators.required],
+      expireYear: ['', Validators.required],
+      cvc: ['', Validators.required],
     });
   }
 
@@ -61,6 +81,7 @@ export class PaymentComponent implements OnInit {
   payment() {
     this.paymentService.payment().subscribe(
       (response) => {
+        this.add();
         this.paymentSuccessfull = response.success;
         this.toastrService.success(response.message);
       },
@@ -92,4 +113,34 @@ export class PaymentComponent implements OnInit {
       }
     }
   }
+
+  add() {
+    if (this.cardAddForm.valid && this.isChecked) {
+      console.log(this.isChecked);
+      let cardModel = Object.assign({}, this.cardAddForm.value);
+      this.cardService.addCard(cardModel).subscribe(
+        (response) => {
+          this.toastrService.success(response.message, 'Başarılı');
+        },
+        (responseError) => {
+          if (responseError.error.Errors.length > 0) {
+            for (let i = 0; i < responseError.error.Errors.length; i++) {
+              this.toastrService.error(
+                responseError.error.Errors[i].ErrorMessage,
+                'Doğrulama Hatası'
+              );
+            }
+          }
+        }
+      );
+    } else {
+      this.toastrService.error('Formunuz eksik!', 'Dikkat');
+    }
+  }
+
+  // getCardByUserId(){
+  //   this.cardService.getByUserId(Number(this.localStorageService.get("id"))).subscribe((response) => {
+  //     this.savedCard = response.data[0];
+  //   });
+  // }
 }
