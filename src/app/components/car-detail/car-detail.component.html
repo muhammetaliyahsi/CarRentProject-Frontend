@@ -32,7 +32,7 @@
             <strong>Motor:</strong> {{ car.description }}
           </li>
           <li class="list-group-item">
-            <strong>Fiyat:</strong> {{ car.dailyPrice | currency }}
+            <strong>Fiyat:</strong> {{ car.dailyPrice | currency:"₺" }}
           </li>
           <br>
           <button (click)="goToRentals(car.id)" type="button" class="btn btn-primary btn-lg">Kirala</button>

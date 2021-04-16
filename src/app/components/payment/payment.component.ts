@@ -26,13 +26,9 @@ export class PaymentComponent implements OnInit {
   card: Card[];
   cardExist: Boolean = false;
   paymentSuccessfull: boolean;
-  cardOwnerName: string;
-  cardNumber: string;
-  expireMonth: number;
-  expireYear: number;
-  cvc: string;
   cardAddForm: FormGroup;
   isChecked: boolean = false;
+  isCheckedCard: boolean = false;
 
   constructor(
     private cardService: CardService,
@@ -53,6 +49,7 @@ export class PaymentComponent implements OnInit {
       }
     });
     this.createCardAddForm();
+    this.getCardByUserId();
   }
 
   createCardAddForm() {
@@ -114,33 +111,64 @@ export class PaymentComponent implements OnInit {
     }
   }
 
+  isCardExist() {
+    if (this.savedCard != null) {
+      this.cardExist = true;
+    }
+  }
+
+  getCardByUserId() {
+    this.cardService
+      .getByUserId(Number(this.localStorageService.get('id')))
+      .subscribe((response) => {
+        this.savedCard = response.data[0];
+        this.isCardExist();
+      });
+  }
+
+  checkedCard() {
+    this.isCheckedCard = true;
+    this.getCardDetails();
+  }
+
+  getCardDetails() {
+    if (this.isCheckedCard) {
+      this.cardAddForm = this.formBuilder.group({
+        userId: [
+          Number(this.localStorageService.get('id')),
+          Validators.required,
+        ],
+        cardOwnerName: this.savedCard.cardOwnerName,
+        cardNumber: this.savedCard.cardNumber,
+        expireMonth: this.savedCard.expireMonth,
+        expireYear: this.savedCard.expireYear,
+        cvc: this.savedCard.cvc,
+      });
+    }
+  }
+
   add() {
     if (this.cardAddForm.valid && this.isChecked) {
-      console.log(this.isChecked);
       let cardModel = Object.assign({}, this.cardAddForm.value);
-      this.cardService.addCard(cardModel).subscribe(
-        (response) => {
-          this.toastrService.success(response.message, 'Başarılı');
-        },
-        (responseError) => {
-          if (responseError.error.Errors.length > 0) {
-            for (let i = 0; i < responseError.error.Errors.length; i++) {
-              this.toastrService.error(
-                responseError.error.Errors[i].ErrorMessage,
-                'Doğrulama Hatası'
-              );
+      if (this.savedCard.cardNumber != this.cardAddForm.value.cardNumber) {
+        this.cardService.addCard(cardModel).subscribe(
+          (response) => {
+            this.toastrService.success(response.message, 'Başarılı');
+          },
+          (responseError) => {
+            if (responseError.error.Errors.length > 0) {
+              for (let i = 0; i < responseError.error.Errors.length; i++) {
+                this.toastrService.error(
+                  responseError.error.Errors[i].ErrorMessage,
+                  'Doğrulama Hatası'
+                );
+              }
             }
           }
-        }
-      );
+        );
+      }
     } else {
       this.toastrService.error('Formunuz eksik!', 'Dikkat');
     }
   }
-
-  // getCardByUserId(){
-  //   this.cardService.getByUserId(Number(this.localStorageService.get("id"))).subscribe((response) => {
-  //     this.savedCard = response.data[0];
-  //   });
-  // }
 }
